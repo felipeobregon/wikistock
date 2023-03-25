@@ -46,6 +46,11 @@ def createFrame(companies):
     f = pd.DataFrame(myDict)
     return f
 
+def getCurrentPosition():
+    ret = 0
+    with open('index', 'r') as f:
+        ret = f.read()
+    return ret
 
 # Read from CSV file, returns series
 def getCompanies(i, j):
@@ -70,4 +75,6 @@ def mainProcess():
     print(fr)
     #createFile(fr)
 
-mainProcess()
+#mainProcess()
+
+print(getCurrentPosition())
