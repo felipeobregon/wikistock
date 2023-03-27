@@ -3,6 +3,7 @@ import wikipedia
 import time
 
 running = True # is the computation running
+index = None
 
 myDict = {'company': [],
           'summary': []}
@@ -22,7 +23,8 @@ def getSummary(title):
     return page.summary
 
 def createFrame(companies):
-    for i in range(0, len(companies)):
+    global index
+    for i in range(index, len(companies)):
         if running:
             c = companies[i]
             firstResult = getFirstResult(c)
@@ -32,16 +34,13 @@ def createFrame(companies):
                 print('success', i)
         else:
             writeToFile()
+            break
+
+        index += 1
 
 
 def writeToFile():
-    pd.DataFrame(myDict).to_csv('out.csv')
-
-def getCurrentPosition():
-    ret = 0
-    with open('index', 'r') as f:
-        ret = f.read()
-    return ret
+    pd.DataFrame(myDict).to_csv(f'out{index}.csv')
 
 # Read from CSV file, returns series
 def getCompanies(i, j):
@@ -57,9 +56,17 @@ def getAllCompanies():
 def stopComputation():
     global running
     running = False
+    with open('index', 'w') as f:
+        f.write(str(index))
+
+def readIndex():
+    global index
+    with open('index', 'r') as f:
+        index = int(f.read())
     
 def runComputation():
     c = getAllCompanies()
+    readIndex()
 
     createFrame(c)
 
