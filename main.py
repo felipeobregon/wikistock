@@ -2,6 +2,8 @@ import pandas as pd
 import wikipedia
 import time
 
+running = True # is the computation running
+
 myDict = {'company': [],
           'summary': []}
 
@@ -14,38 +16,28 @@ def getFirstResult(query):
         return []
     else:
         return results[0]
-    
-def firstParagraph(title):
+
+def getSummary(title):
     page = wikipedia.page(title=title,auto_suggest=False)
     return page.summary
 
-def companySummary(title):
-
-    return firstParagraph(title)
 
 def createFrame(companies):
+    for i in range(0, len(companies)):
+        if running:
+            c = companies[i]
+            firstResult = getFirstResult(c)
+            if not isinstance(firstResult, list): # if not empty list (firstResult returns either a string or an empty list)
+                myDict['company'].append(c)
+                myDict['summary'].append(getSummary(firstResult))
+                print('success', i)
+        else:
+            break
 
-    # Remove companies that do not have a Wikipedia article
-    #companies = [c for c in companies if not isinstance(getFirstResult(c),list)]
-    #filterCompanies = []
-    for c in companies:
-        firstResult = getFirstResult(c)
-        if not isinstance(firstResult, list): # if not empty list (firstResult returns either a string or an empty list)
-            myDict['company'].append(c)
-            myDict['summary'].append(companySummary(firstResult))
 
-        
 
-    # I want to create a new dataframe that consists of two columns. Company name and first paragraph
-    # paragraphs = []
-    # for c in filterCompanies:
-    #     paragraphs.append(companySummary(c))
-
-    # myDict = {'company': filterCompanies,
-    #         'summary': paragraphs}
-        
-    f = pd.DataFrame(myDict)
-    return f
+def writeToFile():
+    pd.DataFrame(myDict).to_csv('out.csv')
 
 def getCurrentPosition():
     ret = 0
@@ -64,21 +56,17 @@ def getAllCompanies():
     companies = df.iloc[:,1]
     return companies
 
-def createFile(table):
-    html_table = table.to_html()
-
-    with open('myfile.html', 'w', encoding="utf-8") as file:
-        file.write(html_table)
 
 def mainProcess():
-    c = getCompanies(10,30)
-    fr = createFrame(c)
-    print(fr)
-    #createFile(fr)
+    c = getAllCompanies()
+
+    try:
+        createFrame(c)
+    except KeyboardInterrupt:
+        writeToFile()
 
 mainProcess()
 
-#print(getCurrentPosition())
 
 '''
 I need create table chunks and merge them vertically.
