@@ -21,7 +21,6 @@ def getSummary(title):
     page = wikipedia.page(title=title,auto_suggest=False)
     return page.summary
 
-
 def createFrame(companies):
     for i in range(0, len(companies)):
         if running:
@@ -32,8 +31,7 @@ def createFrame(companies):
                 myDict['summary'].append(getSummary(firstResult))
                 print('success', i)
         else:
-            break
-
+            writeToFile()
 
 
 def writeToFile():
@@ -56,16 +54,15 @@ def getAllCompanies():
     companies = df.iloc[:,1]
     return companies
 
-
-def mainProcess():
+def stopComputation():
+    global running
+    running = False
+    
+def runComputation():
     c = getAllCompanies()
 
-    try:
-        createFrame(c)
-    except KeyboardInterrupt:
-        writeToFile()
+    createFrame(c)
 
-mainProcess()
 
 
 '''
