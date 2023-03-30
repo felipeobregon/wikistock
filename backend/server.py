@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import threading
-import main
+import backend.main as main
 
 app = Flask(__name__)
 
