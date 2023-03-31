@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-export default function Table(props) {
-  const [data, setData] = useState(props.data);
+export default function Table({data}) {
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
 
   return (
