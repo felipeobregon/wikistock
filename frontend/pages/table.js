@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-function Table(props) {
+export default function Table(props) {
   const [data, setData] = useState(props.data);
-  const headers = Object.keys(data[0]);
+  const headers = data.length > 0 ? Object.keys(data[0]) : [];
 
   return (
     <table>
@@ -25,5 +25,3 @@ function Table(props) {
     </table>
   );
 }
-
-export default Table;
