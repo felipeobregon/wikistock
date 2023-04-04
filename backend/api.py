@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request
 from data import get_data
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 PAGE_SIZE = 10
-FILENAME = '../data tools/a.json'
+FILENAME = '../data/nasdaq.json'
 
 @app.route('/data')
 def paginate():
